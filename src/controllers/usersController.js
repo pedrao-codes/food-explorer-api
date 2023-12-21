@@ -1,8 +1,14 @@
+const knex = require("../database/knex");
+
 class UsersController {
-    create(request, response) {
-        const { email, password } = request.body
-    
-        response.json({email, password})
+    async create(request, response) {
+        const { name, email, password } = request.body
+        
+        await knex("users").insert({
+            name, email, password
+        })
+
+        return response.json("Usuário criado com sucesso!")
     }
 }
 
