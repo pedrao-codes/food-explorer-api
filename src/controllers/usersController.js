@@ -1,7 +1,6 @@
 const knex = require("../database/knex");
-const AppError = require("../utils/AppError")
-
-const { hash, compare } = require("bcryptjs")
+const AppError = require("../utils/AppError");
+const { hash } = require("bcryptjs");
 
 class UsersController {
     async create(request, response) {
@@ -26,28 +25,6 @@ class UsersController {
         })
 
         return response.status(201).json()
-    }
-
-    async read(request, response) {
-        const { email, password } = request.body
-
-        if(!email || !password) {
-            throw new AppError("Por favor, preencha os dados corretamente", 400)
-        }
-
-        const user = await knex("users").select().where({ email }).first()
-
-        if(!user) {
-            throw new AppError("E-mail e/ou senha inválido(s)")
-        }
-
-        const passwordMatched = await compare(password, user.password)
-
-        if(!passwordMatched) {
-            throw new AppError("E-mail e/ou senha inválido(s)")
-        }
-
-        return response.status(200).json(user)
     }
 }
 
