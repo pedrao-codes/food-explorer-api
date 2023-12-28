@@ -5,6 +5,6 @@ const ensureAuthenticated = require("../middlewares/ensureAuthenticated")
 const SessionsController = require("../controllers/SessionsController")
 const sessionsController = new SessionsController()
 
-sessionsRoutes.post("/", ensureAuthenticated, sessionsController.create)
+sessionsRoutes.post("/", sessionsController.create)
 
 module.exports = sessionsRoutes

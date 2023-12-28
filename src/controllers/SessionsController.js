@@ -32,7 +32,7 @@ class SessionsController {
             expiresIn
         })
 
-        return response.status(200).json({ user, token })
+        return response.status(200).json({ token })
     }
 }
 
