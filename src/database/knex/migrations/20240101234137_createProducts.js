@@ -1,7 +1,10 @@
 exports.up = knex => knex.schema.createTable("products", table => {
     table.increments("id")
     table.text("name")
-    table.text("group")
+    table.integer("category_id")
+        .references("id")
+        .inTable("products_categories")
+        .onDelete("CASCADE")
     table.text("description")
     table.decimal("price", 5, 2)
     table.text("image")
