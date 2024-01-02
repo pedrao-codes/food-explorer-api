@@ -11,9 +11,9 @@ class ProductsController {
             throw new AppError("Por favor, preencha os campos corretamente!")
         }
 
-        const { name, category, description, price, image } = product
+        const { name, category, description, price, image, tags } = product
 
-        const nameExists = await knex("products").where(product.name).first()
+        const nameExists = await knex("products").where({ name }).first()
 
         if(nameExists) {
             throw new AppError("Já existe um produto com esse nome")
@@ -21,7 +21,7 @@ class ProductsController {
 
         const findCategory =
             await knex("products_categories")
-            .where(category).first()
+            .where({ category }).first()
             .select("id")
 
         if(!findCategory) {
@@ -30,9 +30,22 @@ class ProductsController {
 
         const category_id = findCategory.id
 
-        await knex("products").insert({
+        let product_id = await knex("products").insert({
             name, category_id, description, price, image
         })
+        
+        if(tags) {
+            product_id = Number(product_id)
+
+            const tagsInsert = tags.map(tag => {
+                return {
+                    product_id,
+                    name: tag
+                }
+            })
+    
+            await knex("tags").insert(tagsInsert)
+        }
 
         response.status(201).json()
     }
