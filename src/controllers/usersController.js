@@ -6,7 +6,9 @@ class UsersController {
     async create(request, response) {
         const { name, email, password } = request.body
 
-        if(!name || !email || !password) {
+        const valuesIsEmpty = !name || !email || !password
+
+        if(valuesIsEmpty) {
             throw new AppError("Por favor, preencha os dados corretamente", 400)
         }
 
