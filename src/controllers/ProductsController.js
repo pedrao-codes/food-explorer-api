@@ -52,22 +52,39 @@ class ProductsController {
 
     async index(request, response) {
         const products = await knex("products_categories")
-        .select([
-            "products.id as product_id",
-            "products.name",
-            "products_categories.category",
-            "products.description",
-            "products.price",
-            "products.image"
-        ])
-        .innerJoin(
-            "products",
-            "products.category_id",
-            "products_categories.id"
-        )
-        .orderBy("products_categories.category")
+            .select([
+                "products.id as product_id",
+                "products.name",
+                "products_categories.category",
+                "products.description",
+                "products.price",
+                "products.image"
+            ])
+            .innerJoin(
+                "products",
+                "products.category_id",
+                "products_categories.id"
+            )
+            .orderBy("products_categories.category")
         
         response.status(201).json(products)
+    }
+
+    async show(request, response) {
+        const { id } = request.params
+
+        const product = await knex("products").where({ id }).first()
+
+        if(!product) {
+            throw new AppError("Produto não encontrado", 404)
+        }
+
+        const tags = await knex("tags").where({ product_id: id }).orderBy("name")
+
+        return response.status(201).json({
+            ...product,
+            tags
+        })
     }
 }
 
